@@ -1,14 +1,37 @@
 export class HashTable<T> {
     private table: T[];
     public size: number;
+    private initialCapacity: number;
     
-    constructor(initialCapacity: number, entries?: HashTable<T>) {
-        if (entries) {
+    constructor(initialCapacity: number = 0) {
+        this.initialCapacity = initialCapacity;
+        this.size = 0;
+        this.table = [];    
+    }
 
+    //////////////////////////////
+    ///////// PROPERTIES /////////
+    //////////////////////////////
+    
+    /** 
+     * Verifies if the HashMap has a fixed size provided in the constructor.
+     * 
+     * The default value will always return `false`. */
+    public get fixedInitialCapacity(): boolean {
+        if (![0, -1].includes(this.initialCapacity)) {
+            return true;
         }
 
-        this.size = initialCapacity;
-        this.table = [];    
+        return false;
+    }
+
+    public get keys(): number[] {
+        const keys = [] as number[];
+        for (const [int, _] of this.table.entries()) {
+            keys.push(int);
+        }
+
+        return keys;
     }
 
     private hash(key: string): number {
@@ -29,15 +52,6 @@ export class HashTable<T> {
         }
 
         return arr;
-    }
-
-    public allIndexes(): number[] {
-        const keys = [] as number[];
-        for (const [int, _] of this.table.entries()) {
-            keys.push(int);
-        }
-
-        return keys;
     }
 
     public allValues(): T[] {
@@ -65,5 +79,13 @@ export class HashTable<T> {
         const value = this.table[index];
 
         return (value ? value : undefined);
+    }
+
+    public remove(key: string): void {
+        const index = this.hash(key);
+        
+        if (index > -1) {
+            this.table.splice(index, 1);
+        }
     }
 }
